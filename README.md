@@ -10,9 +10,6 @@ nimble install -d
 
 # build the core
 nimble core
-
-# build a C-bassed core to compare
-nimble example
 ```
 
 You can run your core like this:
@@ -28,4 +25,20 @@ retroarch -L example_libretro.so
 retroarch -L example_libretro.dll
 ```
 
-If you don't need the C example, you can delete `src/example.c' and remove the `example` task from `example_libretro.nimble`. It's basically just for 
+## C example
+
+I included the original example in `src/example.c` to compare. If you don't need the C example, you can delete the file and remove the `example` task from `example_libretro.nimble`. It's basically just to show how to translate a C core into nim.
+
+```
+# build the C example core
+nimble example
+
+# mac
+/Applications/RetroArch.app/Contents/MacOS/RetroArch -L example_libretro_c.dylib
+
+# linux
+retroarch -L example_libretro_c.so
+
+# windows
+retroarch -L example_libretro_c.dll
+```
