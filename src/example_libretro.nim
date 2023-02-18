@@ -1,4 +1,7 @@
 import example_libretro/libretro
+import std/random
+
+randomize()
 
 var video_cb: retro_video_refresh_t
 var audio_cb: retro_audio_sample_t
@@ -7,7 +10,7 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
-var buf:array[1280, int32]
+var buf:array[1280, uint32]
 
 proc log_cb(level: retro_log_level, message: string) =
   echo message
@@ -66,8 +69,8 @@ proc retro_reset*() {.cdecl,exportc,dynlib.} =
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
   for i in 0..1279:
-     buf[i] = high(int32)
-  video_cb(buf, 320, 240, 1280) # stride << 2
+     buf[i] = uint32(int32(rand(high(int32))))
+  video_cb(buf, 320, 240, 320)
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
   var fmt = RETRO_PIXEL_FORMAT_XRGB8888
