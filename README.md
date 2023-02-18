@@ -52,7 +52,7 @@ retroarch -L example_libretro.dll
 
 ## C example
 
-I included the original example in `src/example.c` to compare. If you don't need the C example, you can delete the file and remove the `example` task from `example_libretro.nimble`. It's basically just to show how to translate a C core into nim.
+I included the original example in `c/example.c` to compare. If you don't need the C example, you can delete the file and remove the `example` task from `example_libretro.nimble`. It's basically just to show how to translate a C core into nim.
 
 ```
 # build the C example core

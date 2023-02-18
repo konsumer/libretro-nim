@@ -11,7 +11,7 @@ task core, "Build your libretro core":
 
 # TODO: is there a more cross-platform way to do this?
 task example, "Build C example to compare":
-  exec("gcc src/example.c -shared -fPIC -o example_libretro_c.dylib")
+  exec("gcc c/example.c -shared -fPIC -o example_libretro_c.dylib")
 
 import os
 
