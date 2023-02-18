@@ -1,4 +1,5 @@
 import bitops
+import std/terminal
 import example_libretro/libretro
 
 const WIDTH = 320
@@ -21,7 +22,14 @@ const color_r:uint32 = 0xff shl 16
 const color_g:uint32 = 0xff shl 8
 
 proc log_cb(level: retro_log_level, message: string) =
-  echo message
+  if level == RETRO_LOG_DEBUG:
+    stdout.styledWriteLine(fgBlue, "DEBUG: ", fgDefault, message)
+  elif level == RETRO_LOG_INFO:
+    stdout.styledWriteLine(fgYellow, "INFO: ", fgDefault, message)
+  elif level == RETRO_LOG_WARN:
+    stdout.styledWriteLine(bgMagenta, "WARN: ", fgDefault, message)
+  elif level == RETRO_LOG_ERROR:
+    stdout.styledWriteLine(fgRed, "ERROR: ", fgDefault, message)
 
 proc retro_set_video_refresh*(cb: retro_video_refresh_t) {.cdecl,exportc,dynlib.} =
   video_cb = cb
@@ -44,16 +52,16 @@ proc retro_set_input_state*(cb: retro_input_state_t) {.cdecl,exportc,dynlib.} =
   input_state_cb = cb
 
 proc retro_init*() {.cdecl,exportc,dynlib.} =
-  echo "retro_init"
+  log_cb(RETRO_LOG_DEBUG, "retro_init() called.")
 
 proc retro_deinit*() {.cdecl,exportc,dynlib.} =
-  echo "retro_deinit"
+  log_cb(RETRO_LOG_DEBUG, "retro_deinit() called.")
 
 proc retro_api_version*(): cuint {.cdecl,exportc,dynlib.} =
   return RETRO_API_VERSION
 
 proc retro_set_controller_port_device*(port: cuint; device: cuint) {.cdecl,exportc,dynlib.} =
-  echo "retro_set_controller_port_device"
+  log_cb(RETRO_LOG_DEBUG, "retro_set_controller_port_device() called.")
   echo port, device
 
 proc retro_get_system_info*(info: ptr retro_system_info) {.cdecl,exportc,dynlib.} =
@@ -69,10 +77,10 @@ proc retro_get_system_av_info*(info: ptr retro_system_av_info) {.cdecl,exportc,d
   info.geometry.base_height = HEIGHT
   info.geometry.max_width = WIDTH
   info.geometry.max_height = HEIGHT
-  info.geometry.aspect_ratio = 4 / 3
+  info.geometry.aspect_ratio = WIDTH / HEIGHT
 
 proc retro_reset*() {.cdecl,exportc,dynlib.} =
-  echo "retro_reset"
+  log_cb(RETRO_LOG_DEBUG, "retro_reset() called.")
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
   for y in 0..(HEIGHT - 1):
@@ -89,12 +97,12 @@ proc retro_run*() {.cdecl,exportc,dynlib.} =
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
   var fmt = RETRO_PIXEL_FORMAT_XRGB8888
   if not environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, addr fmt):
-    log_cb(RETRO_LOG_INFO, "XRGB8888 is not supported.\n")
+    log_cb(RETRO_LOG_INFO, "XRGB8888 is not supported.")
     return false
   return true
 
 proc retro_unload_game*() {.cdecl,exportc,dynlib.} =
-  echo "retro_unload_game"
+  log_cb(RETRO_LOG_DEBUG, "retro_unload_game() called.")
 
 proc retro_get_region*(): cuint {.cdecl,exportc,dynlib.} =
   return 0 # NTSC
