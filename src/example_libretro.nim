@@ -74,9 +74,9 @@ let color_r:uint32 = 0xff shl 16
 let color_g:uint32 = 0xff shl 8
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
-  for y in 0..(HEIGHT-1):
+  for y in 0..(HEIGHT - 1):
     let index_y = uint32 bitand((y shr 4), 1)
-    for x in 0..(WIDTH-1):
+    for x in 0..(WIDTH - 1):
       let b = ((y * WIDTH) + x)
       let index_x = uint32 bitand((x shr 4), 1)
       if bool bitxor(index_y, index_x):
