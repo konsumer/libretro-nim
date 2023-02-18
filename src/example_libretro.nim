@@ -10,7 +10,7 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
-var buf:array[1280, uint32]
+var buf:array[320*240*4, byte]
 
 proc log_cb(level: retro_log_level, message: string) =
   echo message
@@ -68,9 +68,20 @@ proc retro_reset*() {.cdecl,exportc,dynlib.} =
   echo "retro_reset"
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
-  for i in 0..1279:
-     buf[i] = uint32(int32(rand(high(int32))))
-  video_cb(buf, 320, 240, 320)
+  for y in 0..239:
+    for x in 0..319:
+      var b = ((y * 320) + x) * 4
+      buf[b  ] = 0x00 # B
+      buf[b+1] = 0x00 # G
+      buf[b+2] = 0x00 # R
+      buf[b+3] = 0xFF # A
+      if x mod 10 == 0:
+        buf[b] = 0xFF
+      if y mod 10 == 0:
+        buf[b + 2] = 0xFF
+      if y mod 5 == 0 and x mod 5 == 0:
+        buf[b + 1] = 0xFF
+  video_cb(buf, 320, 240, (320 shl 2))
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
   var fmt = RETRO_PIXEL_FORMAT_XRGB8888

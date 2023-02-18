@@ -317,7 +317,7 @@ type
 
   # typedef void(RETRO_CALLCONV* retro_video_refresh_t)(const void* data, unsigned width, unsigned height, size_t pitch);
   # TODO: array is hardcoded to 320x240
-  retro_video_refresh_t* = proc(data:array[1280, uint32], width:cuint, height:cuint, pitch:csize_t):void {.cdecl.} # 320 * 240 * 4
+  retro_video_refresh_t* = proc(data:array[320*240*4, byte], width:cuint, height:cuint, pitch:csize_t):void {.cdecl.}
 
   # typedef void(RETRO_CALLCONV* retro_audio_sample_t)(int16_t left, int16_t right);
   retro_audio_sample_t* = proc(left:int16, right:int16):void {.cdecl.}
