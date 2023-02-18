@@ -1,6 +1,11 @@
 import bitops
 import example_libretro/libretro
 
+const WIDTH = 320
+const HEIGHT = 240 
+const FPS = 60
+const SAMPLE_RATE = 48000
+
 var video_cb: retro_video_refresh_t
 var audio_cb: retro_audio_sample_t
 var audio_batch_cb: retro_audio_sample_batch_t
@@ -8,7 +13,7 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
-var buf = newSeq[cuint](320*240)
+var buf = newSeq[cuint](WIDTH * HEIGHT)
 
 proc log_cb(level: retro_log_level, message: string) =
   echo message
@@ -54,12 +59,12 @@ proc retro_get_system_info*(info: ptr retro_system_info) {.cdecl,exportc,dynlib.
 
 proc retro_get_system_av_info*(info: ptr retro_system_av_info) {.cdecl,exportc,dynlib.} =
   echo "retro_get_system_av_info"
-  info.timing.fps = 60
-  info.timing.sample_rate = 48000
-  info.geometry.base_width = 320
-  info.geometry.base_height = 240
-  info.geometry.max_width = 320
-  info.geometry.max_height = 240
+  info.timing.fps = FPS
+  info.timing.sample_rate = SAMPLE_RATE
+  info.geometry.base_width = WIDTH
+  info.geometry.base_height = HEIGHT
+  info.geometry.max_width = WIDTH
+  info.geometry.max_height = HEIGHT
   info.geometry.aspect_ratio = 4 / 3
 
 proc retro_reset*() {.cdecl,exportc,dynlib.} =
@@ -69,16 +74,16 @@ let color_r:uint32 = 0xff shl 16
 let color_g:uint32 = 0xff shl 8
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
-  for y in 0..239:
+  for y in 0..(HEIGHT-1):
     let index_y = uint32 bitand((y shr 4), 1)
-    for x in 0..319:
-      let b = ((y * 320) + x)
+    for x in 0..(WIDTH-1):
+      let b = ((y * WIDTH) + x)
       let index_x = uint32 bitand((x shr 4), 1)
       if bool bitxor(index_y, index_x):
         buf[b] = color_r
       else:
         buf[b] = color_g
-  video_cb(buf, 320, 240, (320 shl 2))
+  video_cb(buf, WIDTH, HEIGHT, (WIDTH shl 2))
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
   var fmt = RETRO_PIXEL_FORMAT_XRGB8888
