@@ -124,8 +124,7 @@ type
     RETRO_LANGUAGE_CHINESE_SIMPLIFIED = 11, RETRO_LANGUAGE_ESPERANTO = 12,
     RETRO_LANGUAGE_POLISH = 13, RETRO_LANGUAGE_LAST,
     RETRO_LANGUAGE_DUMMY = 2147483647
-
-  # TODO: need better names, I think
+  
   retro_key* = enum
     RETROK_UNKNOWN = 0, RETROK_BACKSPACE = 8, RETROK_TAB = 9, RETROK_CLEAR = 12,
     RETROK_RETURN = 13, RETROK_PAUSE = 19, RETROK_ESCAPE = 27, RETROK_SPACE = 32,
@@ -316,15 +315,13 @@ type
   retro_environment_t* = proc(cmd:cuint, data:pointer):bool {.cdecl.}
 
   # typedef void(RETRO_CALLCONV* retro_video_refresh_t)(const void* data, unsigned width, unsigned height, size_t pitch);
-  # TODO: array is hardcoded to 320x240
-  retro_video_refresh_t* = proc(data:array[320*240*4, byte], width:cuint, height:cuint, pitch:csize_t):void {.cdecl.}
+  retro_video_refresh_t* = proc(data:seq[cuint], width:cuint, height:cuint, pitch:csize_t):void {.cdecl.}
 
   # typedef void(RETRO_CALLCONV* retro_audio_sample_t)(int16_t left, int16_t right);
   retro_audio_sample_t* = proc(left:int16, right:int16):void {.cdecl.}
 
   # typedef size_t(RETRO_CALLCONV* retro_audio_sample_batch_t)(const int16_t* data, size_t frames);
-  # TODO: array is hardcoded to 48000htz/60fps
-  retro_audio_sample_batch_t* = proc(data:array[800, int16], frames:csize_t):csize_t {.cdecl.} # 48000/60
+  retro_audio_sample_batch_t* = proc(data:seq[int16], frames:csize_t):csize_t {.cdecl.} # 48000/60
 
   # typedef void(RETRO_CALLCONV* retro_input_poll_t)(void);
   retro_input_poll_t* = proc():void {.cdecl.}

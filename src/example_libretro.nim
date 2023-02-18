@@ -1,7 +1,5 @@
+import bitops
 import example_libretro/libretro
-import std/random
-
-randomize()
 
 var video_cb: retro_video_refresh_t
 var audio_cb: retro_audio_sample_t
@@ -10,7 +8,7 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
-var buf:array[320*240*4, byte]
+var buf = newSeq[cuint](320*240)
 
 proc log_cb(level: retro_log_level, message: string) =
   echo message
@@ -67,20 +65,19 @@ proc retro_get_system_av_info*(info: ptr retro_system_av_info) {.cdecl,exportc,d
 proc retro_reset*() {.cdecl,exportc,dynlib.} =
   echo "retro_reset"
 
+let color_r:uint32 = 0xff shl 16
+let color_g:uint32 = 0xff shl 8
+
 proc retro_run*() {.cdecl,exportc,dynlib.} =
   for y in 0..239:
+    let index_y = uint32 bitand((y shr 4), 1)
     for x in 0..319:
-      var b = ((y * 320) + x) * 4
-      buf[b  ] = 0x00 # B
-      buf[b+1] = 0x00 # G
-      buf[b+2] = 0x00 # R
-      buf[b+3] = 0xFF # A
-      if x mod 10 == 0:
-        buf[b] = byte(y)
-      if y mod 10 == 0:
-        buf[b + 2] = byte(y)
-      if y mod 5 == 0 and x mod 5 == 0:
-        buf[b + 1] = byte(y)
+      let b = ((y * 320) + x)
+      let index_x = uint32 bitand((x shr 4), 1)
+      if bool bitxor(index_y, index_x):
+        buf[b] = color_r
+      else:
+        buf[b] = color_g
   video_cb(buf, 320, 240, (320 shl 2))
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
