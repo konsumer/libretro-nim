@@ -13,7 +13,12 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
+# video framebuffer
 var buf = newSeq[cuint](WIDTH * HEIGHT)
+
+# colors used for checkerboard
+const color_r:uint32 = 0xff shl 16
+const color_g:uint32 = 0xff shl 8
 
 proc log_cb(level: retro_log_level, message: string) =
   echo message
@@ -58,7 +63,6 @@ proc retro_get_system_info*(info: ptr retro_system_info) {.cdecl,exportc,dynlib.
   info.valid_extensions = nil # we don't use any ROMs
 
 proc retro_get_system_av_info*(info: ptr retro_system_av_info) {.cdecl,exportc,dynlib.} =
-  echo "retro_get_system_av_info"
   info.timing.fps = FPS
   info.timing.sample_rate = SAMPLE_RATE
   info.geometry.base_width = WIDTH
@@ -69,9 +73,6 @@ proc retro_get_system_av_info*(info: ptr retro_system_av_info) {.cdecl,exportc,d
 
 proc retro_reset*() {.cdecl,exportc,dynlib.} =
   echo "retro_reset"
-
-let color_r:uint32 = 0xff shl 16
-let color_g:uint32 = 0xff shl 8
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
   for y in 0..(HEIGHT - 1):
