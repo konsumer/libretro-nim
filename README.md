@@ -2,27 +2,6 @@ This is an example core, written in nim. This is a translation from [a basic sof
 
 The current demo is not quite an exact port, but proves x/y/color is working right:
 
-```nim
-proc retro_run*() {.cdecl,exportc,dynlib.} =
-  for y in 0..239:
-    for x in 0..319:
-      var b = ((y * 320) + x) * 4
-      buf[b  ] = 0x00 # B
-      buf[b+1] = 0x00 # G
-      buf[b+2] = 0x00 # R
-      buf[b+3] = 0xFF # A
-      # every 10 columns, make a blue pixel
-      if x mod 10 == 0:
-        buf[b] = 0xFF
-      # every 10 rows, make a red pixel
-      if y mod 10 == 0:
-        buf[b + 2] = 0xFF
-      # ever 5 pixels in both directions, make a green dot
-      if y mod 5 == 0 and x mod 5 == 0:
-        buf[b + 1] = 0xFF
-  video_cb(buf, 320, 240, (320 shl 2))
-```
-
 ![screenshot](screen.png)
 
 ## Usage
@@ -52,7 +31,7 @@ retroarch -L example_libretro.dll
 
 ## C example
 
-I included the original example in `c/example.c` to compare. If you don't need the C example, you can delete the file and remove the `example` task from `example_libretro.nimble`. It's basically just to show how to translate a C core into nim.
+I included the original example in `example/example.c` to compare. If you don't need the C example, you can delete the example dir and remove the `example` task from `example_libretro.nimble`. It's basically just to show how to translate a C core into nim.
 
 ```
 # build the C example core

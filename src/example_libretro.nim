@@ -76,11 +76,11 @@ proc retro_run*() {.cdecl,exportc,dynlib.} =
       buf[b+2] = 0x00 # R
       buf[b+3] = 0xFF # A
       if x mod 10 == 0:
-        buf[b] = 0xFF
+        buf[b] = byte(y)
       if y mod 10 == 0:
-        buf[b + 2] = 0xFF
+        buf[b + 2] = byte(y)
       if y mod 5 == 0 and x mod 5 == 0:
-        buf[b + 1] = 0xFF
+        buf[b + 1] = byte(y)
   video_cb(buf, 320, 240, (320 shl 2))
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
