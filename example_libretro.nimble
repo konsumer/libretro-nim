@@ -7,7 +7,7 @@ srcDir        = "src"
 requires "nim >= 1.6.10"
 
 task core, "Build your libretro core":
-  selfExec("c --threads:on --app:lib --out:example_libretro.dylib -d:debug src/example_libretro.nim")
+  selfExec("c --app:lib --out:example_libretro.dylib -d:useSysAssert -d:useGcAssert -d:debug --gc:arc src/example_libretro.nim")
 
 # TODO: is there a more cross-platform way to do this?
 task example, "Build C example to compare":

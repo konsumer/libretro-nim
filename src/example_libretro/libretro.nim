@@ -127,6 +127,7 @@ type
     RETRO_LANGUAGE_POLISH = 13, RETRO_LANGUAGE_LAST,
     RETRO_LANGUAGE_DUMMY = 2147483647
 
+  # TODO: need better names, I think
   # retro_key* = enum
   #   RETROK_UNKNOWN = 0, RETROK_BACKSPACE = 8, RETROK_TAB = 9, RETROK_CLEAR = 12,
   #   RETROK_RETURN = 13, RETROK_PAUSE = 19, RETROK_ESCAPE = 27, RETROK_SPACE = 32,
@@ -225,28 +226,12 @@ type
     num_roms*: cuint
     id*: cuint
 
+  # XXX: not sure if I need these interface/callback-object types
   # retro_get_proc_address_interface* {.bycopy.} = object
   #   get_proc_address*: retro_get_proc_address_t
-
-  retro_log_level* = enum
-    RETRO_LOG_DEBUG = 0, RETRO_LOG_INFO, RETRO_LOG_WARN, RETRO_LOG_ERROR,
-    RETRO_LOG_DUMMY = 2147483647
-
-  # retro_log_callback* {.bycopy.} = object
-  #   log*: retro_log_printf_t
-
-  retro_sensor_action* = enum
-    RETRO_SENSOR_ACCELEROMETER_ENABLE = 0, RETRO_SENSOR_ACCELEROMETER_DISABLE,
-    RETRO_SENSOR_DUMMY = 2147483647
-
   # retro_sensor_interface* {.bycopy.} = object
   #   set_sensor_state*: retro_set_sensor_state_t
   #   get_sensor_input*: retro_sensor_get_input_t
-
-  retro_camera_buffer* = enum
-    RETRO_CAMERA_BUFFER_OPENGL_TEXTURE = 0, RETRO_CAMERA_BUFFER_RAW_FRAMEBUFFER,
-    RETRO_CAMERA_BUFFER_DUMMY = 2147483647
-
   # retro_camera_callback* {.bycopy.} = object
   #   caps*: cuint
   #   width*: cuint
@@ -257,7 +242,6 @@ type
   #   frame_opengl_texture*: retro_camera_frame_opengl_texture_t
   #   initialized*: retro_camera_lifetime_status_t
   #   deinitialized*: retro_camera_lifetime_status_t
-
   # retro_location_callback* {.bycopy.} = object
   #   start*: retro_location_start_t
   #   stop*: retro_location_stop_t
@@ -265,32 +249,14 @@ type
   #   set_interval*: retro_location_set_interval_t
   #   initialized*: retro_location_lifetime_status_t
   #   deinitialized*: retro_location_lifetime_status_t
-
-  retro_rumble_effect* = enum
-    RETRO_RUMBLE_STRONG = 0, RETRO_RUMBLE_WEAK = 1, RETRO_RUMBLE_DUMMY = 2147483647
-
   # retro_rumble_interface* {.bycopy.} = object
   #   set_rumble_state*: retro_set_rumble_state_t
-
   # retro_audio_callback* {.bycopy.} = object
   #   callback*: retro_audio_callback_t
   #   set_state*: retro_audio_set_state_callback_t
-
   # retro_frame_time_callback* {.bycopy.} = object
   #   callback*: retro_frame_time_callback_t
   #   reference*: retro_usec_t
-
-  retro_hw_context_type* = enum
-    RETRO_HW_CONTEXT_NONE = 0,  ##  OpenGL 2.x. Driver can choose to use latest compatibility context.
-    RETRO_HW_CONTEXT_OPENGL = 1, ##  OpenGL ES 2.0.
-    RETRO_HW_CONTEXT_OPENGLES2 = 2, ##  Modern desktop core GL context. Use version_major/
-                                 ##  version_minor fields to set GL version.
-    RETRO_HW_CONTEXT_OPENGL_CORE = 3, ##  OpenGL ES 3.0
-    RETRO_HW_CONTEXT_OPENGLES3 = 4, ##  OpenGL ES 3.1+. Set version_major/version_minor. For GLES2 and GLES3,
-                                 ##  use the corresponding enums directly.
-    RETRO_HW_CONTEXT_OPENGLES_VERSION = 5, ##  Vulkan, see RETRO_ENVIRONMENT_GET_HW_RENDER_INTERFACE.
-    RETRO_HW_CONTEXT_VULKAN = 6, RETRO_HW_CONTEXT_DUMMY = 2147483647
-
   # retro_hw_render_callback* {.bycopy.} = object
   #   context_type*: retro_hw_context_type
   #   context_reset*: retro_hw_context_reset_t
@@ -304,10 +270,8 @@ type
   #   cache_context*: bool
   #   context_destroy*: retro_hw_context_reset_t
   #   debug_context*: bool
-
   # retro_keyboard_callback* {.bycopy.} = object
   #   callback*: retro_keyboard_event_t
-
   # retro_disk_control_callback* {.bycopy.} = object
   #   set_eject_state*: retro_set_eject_state_t
   #   get_eject_state*: retro_get_eject_state_t
@@ -316,6 +280,37 @@ type
   #   get_num_images*: retro_get_num_images_t
   #   replace_image_index*: retro_replace_image_index_t
   #   add_image_index*: retro_add_image_index_t
+  # retro_log_callback* {.bycopy.} = object
+  #   log*: retro_log_printf_t
+
+  retro_log_level* = enum
+    RETRO_LOG_DEBUG = 0, RETRO_LOG_INFO, RETRO_LOG_WARN, RETRO_LOG_ERROR,
+    RETRO_LOG_DUMMY = 2147483647
+
+  retro_sensor_action* = enum
+    RETRO_SENSOR_ACCELEROMETER_ENABLE = 0,
+    RETRO_SENSOR_ACCELEROMETER_DISABLE,
+    RETRO_SENSOR_DUMMY = 2147483647
+
+  retro_camera_buffer* = enum
+    RETRO_CAMERA_BUFFER_OPENGL_TEXTURE = 0,
+    RETRO_CAMERA_BUFFER_RAW_FRAMEBUFFER,
+    RETRO_CAMERA_BUFFER_DUMMY = 2147483647
+
+  retro_rumble_effect* = enum
+    RETRO_RUMBLE_STRONG = 0,
+    RETRO_RUMBLE_WEAK = 1,
+    RETRO_RUMBLE_DUMMY = 2147483647
+
+  retro_hw_context_type* = enum
+    RETRO_HW_CONTEXT_NONE = 0,
+    RETRO_HW_CONTEXT_OPENGL = 1,
+    RETRO_HW_CONTEXT_OPENGLES2 = 2,
+    RETRO_HW_CONTEXT_OPENGL_CORE = 3,
+    RETRO_HW_CONTEXT_OPENGLES3 = 4,
+    RETRO_HW_CONTEXT_OPENGLES_VERSION = 5,
+    RETRO_HW_CONTEXT_VULKAN = 6,
+    RETRO_HW_CONTEXT_DUMMY = 2147483647
 
   retro_pixel_format* = enum
     RETRO_PIXEL_FORMAT_0RGB1555 = 0,
