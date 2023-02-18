@@ -11,12 +11,15 @@ proc retro_run*() {.cdecl,exportc,dynlib.} =
       buf[b+1] = 0x00 # G
       buf[b+2] = 0x00 # R
       buf[b+3] = 0xFF # A
+      # every 10 columns, make a blue pixel
       if x mod 10 == 0:
-        buf[b] = 0xFF # B
+        buf[b] = 0xFF
+      # every 10 rows, make a red pixel
       if y mod 10 == 0:
-        buf[b + 2] = 0xFF # R
+        buf[b + 2] = 0xFF
+      # ever 5 pixels in both directions, make a green dot
       if y mod 5 == 0 and x mod 5 == 0:
-        buf[b + 1] = 0xFF # G
+        buf[b + 1] = 0xFF
   video_cb(buf, 320, 240, (320 shl 2))
 ```
 
