@@ -105,3 +105,5 @@ proc retro_cheat_reset*() {.cdecl,exportc,dynlib.} =
 
 proc retro_cheat_set*(index: cuint; enabled: bool; code: cstring) {.cdecl,exportc,dynlib.} =
   discard
+
+# proc NimMain() {.cdecl, importc.}
