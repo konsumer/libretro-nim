@@ -7,10 +7,10 @@ var input_poll_cb: retro_input_poll_t
 var environ_cb: retro_environment_t
 var input_state_cb: retro_input_state_t
 
+var buf:array[1280, int32]
+
 proc log_cb(level: retro_log_level, message: string) =
   echo message
-
-# TODO: these currently segfault
 
 proc retro_set_video_refresh*(cb: retro_video_refresh_t) {.cdecl,exportc,dynlib.} =
   video_cb = cb
@@ -31,8 +31,6 @@ proc retro_set_environment*(cb: retro_environment_t) {.cdecl,exportc,dynlib.} =
 
 proc retro_set_input_state*(cb: retro_input_state_t) {.cdecl,exportc,dynlib.} =
   input_state_cb = cb
-
-
 
 proc retro_init*() {.cdecl,exportc,dynlib.} =
   echo "retro_init"
@@ -67,7 +65,9 @@ proc retro_reset*() {.cdecl,exportc,dynlib.} =
   echo "retro_reset"
 
 proc retro_run*() {.cdecl,exportc,dynlib.} =
-  echo "retro_run"
+  for i in 0..1279:
+     buf[i] = high(int32)
+  video_cb(buf, 320, 240, 1280) # stride << 2
 
 proc retro_load_game*(info: ptr retro_game_info): bool {.cdecl,exportc,dynlib.} =
   var fmt = RETRO_PIXEL_FORMAT_XRGB8888
@@ -105,5 +105,3 @@ proc retro_cheat_reset*() {.cdecl,exportc,dynlib.} =
 
 proc retro_cheat_set*(index: cuint; enabled: bool; code: cstring) {.cdecl,exportc,dynlib.} =
   discard
-
-# proc NimMain() {.cdecl, importc.}
